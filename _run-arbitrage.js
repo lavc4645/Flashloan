@@ -3,7 +3,7 @@ const Web3 = require("web3");
 const { ChainId, Token, Fetcher, TokenAmount } = require("@uniswap/sdk"); // importing uniswap sdk
 const abis = require("./abis"); // importing the abi of kyber
 const { mainnet: addresses } = require("./addresses"); // import the address of kyber contract
-const Flashloan = require('./build/contracts/Flashloan.json');
+// const Flashloan = require('./build/contracts/Flashloan.json');
 
 const _web3 = new Web3(
   new Web3.providers.WebsocketProvider(process.env.INFURA_URL)
@@ -39,10 +39,10 @@ const init = async () => {
   /**
    * Passing the flashloan abi file to an object
    */
-  const flashloan = new _web3.eth.Contract(
-    Flashloan.abi,
-    Flashloan.networks[networkId].address
-  );
+  // const flashloan = new _web3.eth.Contract(
+  //   Flashloan.abi,
+  //   Flashloan.networks[networkId].address
+  // );
   /**
    * Correction
    * New function for ETH price is added
@@ -128,12 +128,14 @@ const init = async () => {
       /**
        *  Finding the transaction cost 
        */
-      const [tx1, tx2] = Object.keys(DIRECTION).map(direction => flashloan.methods.initiateFlashloan(
-        addresses.dydx.solo,
-        addresses.tokens.dai,
-        AMOUNT_DAI_WEI,
-        DIRECTION[direction]
-      ));
+      // const [tx1, tx2] = Object.keys(DIRECTION).map(direction => flashloan.methods.initiateFlashloan(
+      //   addresses.dydx.solo,
+      //   addresses.tokens.dai,
+      //   AMOUNT_DAI_WEI,
+      //   DIRECTION[direction]
+      // ));
+      tx = kyber.maxGasPrice() 
+      console.log("Tx =",tx)
 
       /**
        *  Calculating the Gas Price
@@ -185,31 +187,31 @@ const init = async () => {
         /**
          * Sending the transaction
          */
-        const data = tx1.encodeABI();
-        const txData = {
-          from: admin,
-          to: flashloan.options.address,
-          data,
-          gas: gasCost1,
-          gasPrice
-        };
-        const receipt = await _web3.eth.sendTransaction(txData);
-        console.log(`Transaction hash: ${receipt.transactionHash}`);
+        // const data = tx1.encodeABI();
+        // const txData = {
+        //   from: admin,
+        //   to: flashloan.options.address,
+        //   data,
+        //   gas: gasCost1,
+        //   gasPrice
+        // };
+        // const receipt = await _web3.eth.sendTransaction(txData);
+        // console.log(`Transaction hash: ${receipt.transactionHash}`);
       } else if(profit2 > 0) {
         console.log('Arbitrage opportunity found!');
         console.log(`Buy ETH on Uniswap at ${uniswapRates.buy} dai`);
         console.log(`Sell ETH on Kyber at ${Kyber.sell} dai`);
         console.log(`Expected profit: ${profit2} dai`);
-        const data = tx2.encodeABI();
-        const txData = {
-          from: admin,
-          to: flashloan.options.address,
-          data,
-          gas: gasCost2,
-          gasPrice
-        };
-        const receipt = await _web3.eth.sendTransaction(txData);
-        console.log(`Transaction hash: ${receipt.transactionHash}`);
+        // const data = tx2.encodeABI();
+        // const txData = {
+        //   from: admin,
+        //   to: flashloan.options.address,
+        //   data,
+        //   gas: gasCost2,
+        //   gasPrice
+        // };
+        // const receipt = await _web3.eth.sendTransaction(txData);
+        // console.log(`Transaction hash: ${receipt.transactionHash}`);
       } else {
         console.log("Sorry!!! Arbitrage Opportunity NOT FOUND ");
       }
